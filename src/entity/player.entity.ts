@@ -1,5 +1,4 @@
-import { BoxCollider, Color, Entity, FlatColor, Game, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
-import { Health } from '../component/health.component';
+import { BoxCollider, Color, Entity, FlatColor, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
 
 export class Player extends Entity {
 
@@ -11,18 +10,8 @@ export class Player extends Entity {
                 new Model(Geometries.SQUARE),
                 new Shader(ShaderPrograms.BASIC),
                 new FlatColor(Color.green()),
-                new BoxCollider(),
-                new Health(10)
+                new BoxCollider()
             ]
         });
-    }
-
-    public onCollisionStart(game: Game, other: Entity): void {
-        if (other.tag === 'enemy') {
-            this.getComponent<Health>('Health').health -= 1;
-        }
-        else if (other.tag === 'food') {
-            game.setData('points', game.getData<number>('points') + 1);
-        }
     }
 }
