@@ -1,21 +1,18 @@
-import { Angle, Keys, State, Transform, Vec2 } from 'aura-2d';
-import { Exploder } from '../entity/exploder.entity';
+import { Angle, Keys, State, Vec2 } from 'aura-2d';
+import { Transform } from '../component/transform.component';
 import { Player } from '../entity/player.entity';
+import { Physics } from '../system/physics.system';
 import { WrapSystem } from '../system/wrap.system';
 
 export const MAIN_STATE = new State({
     name: 'main',
     init: (game) => {
         game.addSystem(WrapSystem);
+        game.addSystem(Physics);
 
         game.world.addEntity(new Player());
-
-        // explosion effect test
-        setTimeout(() => {
-            game.world.filterEntitiesByComponentName('ExplosionData').forEach((e) => (e as Exploder).die())
-        }, 5000);
     },
-    end: (game) => { },
+    end: () => { },
     tick: (game) => {
         const player = game.world.filterEntitiesByTag('player')[0]?.getComponent<Transform>('Transform');
 
@@ -28,7 +25,10 @@ export const MAIN_STATE = new State({
             }
 
             if (game.input.isKeyDown(Keys.W) || game.input.isKeyDown(Keys.ARROW_UP)) {
-                player.move(new Vec2(0, 2))
+                player.accelerate(new Vec2(0, 5));
+            }
+            else {
+                player.decelerate(new Vec2(0, -4));
             }
         }
     }
