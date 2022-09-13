@@ -5,8 +5,8 @@ export class Transform extends BaseTransform {
 
     public acceleration = new Vec2();
 
-    constructor(initialPosition: Vec2, initialScale: Vec2, initialVelocity: Vec2, public readonly maxSpeed: number) {
-        super(initialPosition, initialScale, 0, initialVelocity);
+    constructor(initialPosition: Vec2, initialScale: Vec2, initialAngle = 0, initialVelocity = new Vec2(), public readonly maxSpeed = 0) {
+        super(initialPosition, initialScale, initialAngle, initialVelocity);
     }
 
     public accelerate(by: Vec2): void {

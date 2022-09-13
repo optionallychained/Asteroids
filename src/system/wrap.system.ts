@@ -1,13 +1,13 @@
 import { Game, System, Transform, Vec2 } from 'aura-2d';
 
-export class WrapSystem extends System {
+export class Wrap extends System {
 
     constructor() {
         super('Wrap');
     }
 
     public tick(game: Game): void {
-        const wrappables = game.world.filterEntitiesByComponentName('Transform');
+        const wrappables = game.world.filterEntitiesByComponentNames('Wrappable', 'Transform');
 
         for (const wrappable of wrappables) {
             const transform = wrappable.getComponent<Transform>('Transform');
