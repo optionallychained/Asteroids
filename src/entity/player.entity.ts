@@ -16,7 +16,7 @@ export class Player extends Exploder {
     }
 
     public onCollisionStart(game: Game, other: Entity): void {
-        if (other.tag === 'asteroid') {
+        if (other.tag === 'asteroid' && !(other as Exploder).dead) {
             this.die(game);
         }
     }

@@ -1,5 +1,6 @@
 import { BoxCollider, Color, Entity, FlatColor, Game, Geometries, Model, Shader, ShaderPrograms, Vec2 } from 'aura-2d';
 import { Transform } from '../component/transform.component';
+import { Exploder } from './exploder.entity';
 
 export class Bullet extends Entity {
 
@@ -33,7 +34,7 @@ export class Bullet extends Entity {
     }
 
     public onCollisionStart(game: Game, other: Entity): void {
-        if (other.tag === 'asteroid') {
+        if (other.tag === 'asteroid' && !(other as Exploder).dead) {
             game.world.removeEntity(this);
         }
     }

@@ -1,34 +1,28 @@
-import { BoxCollider, Color, Entity, FlatColor, Game, Geometries, Model, Random, Shader, ShaderPrograms, Vec2 } from 'aura-2d';
+import { BoxCollider, Color, Entity, FlatColor, Game, Random, Vec2 } from 'aura-2d';
 import { Transform } from '../component/transform.component';
 import { Wrappable } from '../component/wrappable.component';
+import { ASTEROIDS } from '../geometry/asteroid.geometry';
+import { Exploder } from './exploder.entity';
 
-// asteroids progress in stages on death, "breaking apart" and shrinking:
-//   stage 1: 1 asteroid, base scale
-//   stage 2: 2 asteroids, 1/2 scale
-//   stage 3: 3 asteroids, 1/3 scale
-export class Asteroid extends Entity {
+export class Asteroid extends Exploder {
 
     constructor(position: Vec2, private baseScale: Vec2, private stage = 1) {
-        super({
-            tag: 'asteroid',
-            components: [
-                // tmp
-                new Model(Geometries.Wireframe.SQUARE),
-                new Shader(ShaderPrograms.BASIC),
-                new FlatColor(Color.white()),
-                new BoxCollider(),
-                new Wrappable()
-            ]
-        });
-
-        const scale = Vec2.scale(baseScale, 1 / stage);
-        this.addComponent(new Transform(position, scale, 0, new Vec2(Random.between(-150, 150), Random.between(-150, 150))));
+        super('asteroid', ASTEROIDS[Math.ceil(Random.between(0, 3)) - 1], [
+            new Transform(position, Vec2.scale(baseScale, 1 / stage), 0, new Vec2(Random.between(-150, 150), Random.between(-150, 150))),
+            new FlatColor(Color.white()),
+            new BoxCollider(),
+            new Wrappable()
+        ]);
     }
 
     public onCollisionStart(game: Game, other: Entity): void {
-        if (other.tag === 'bullet') {
-            game.world.removeEntity(this);
+        if (other.tag === 'bullet' && !this.dead) {
+            this.die(game);
 
+            // asteroids progress in stages on death, "breaking apart" and shrinking:
+            //   stage 1: 1 asteroid, base scale
+            //   stage 2: 2 asteroids, 1/2 scale
+            //   stage 3: 3 asteroids, 1/3 scale
             if (this.stage < 3) {
                 for (let i = 0; i < this.stage + 1; i++) {
                     game.world.addEntity(new Asteroid(this.getComponent<Transform>('Transform').position, this.baseScale, this.stage + 1));
