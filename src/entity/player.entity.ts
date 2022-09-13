@@ -1,18 +1,14 @@
-import { BoxCollider, Color, Entity, FlatColor, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
+import { BoxCollider, Color, FlatColor, Transform, Vec2 } from 'aura-2d';
 import { SHIP } from '../geometry/ship.geometry';
+import { Exploder } from './exploder.entity';
 
-export class Player extends Entity {
+export class Player extends Exploder {
 
     constructor() {
-        super({
-            tag: 'player',
-            components: [
-                new Transform(new Vec2(0, 0), new Vec2(25, 45), 0, new Vec2(650, 0)),
-                new Model(SHIP),
-                new Shader(ShaderPrograms.BASIC),
-                new FlatColor(Color.white()),
-                new BoxCollider()
-            ]
-        });
+        super('player', SHIP, [
+            new Transform(new Vec2(), new Vec2(25, 45)),
+            new FlatColor(Color.white()),
+            new BoxCollider()
+        ]);
     }
 }

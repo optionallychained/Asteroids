@@ -1,4 +1,5 @@
 import { Angle, Keys, State, Transform, Vec2 } from 'aura-2d';
+import { Exploder } from '../entity/exploder.entity';
 import { Player } from '../entity/player.entity';
 import { WrapSystem } from '../system/wrap.system';
 
@@ -8,6 +9,11 @@ export const MAIN_STATE = new State({
         game.addSystem(WrapSystem);
 
         game.world.addEntity(new Player());
+
+        // explosion effect test
+        setTimeout(() => {
+            game.world.filterEntitiesByComponentName('ExplosionData').forEach((e) => (e as Exploder).die())
+        }, 5000);
     },
     end: (game) => { },
     tick: (game) => {
