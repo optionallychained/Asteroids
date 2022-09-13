@@ -1,6 +1,8 @@
-import { Angle, Keys, State, Vec2 } from 'aura-2d';
+import { Angle, Collision, Keys, State, Vec2 } from 'aura-2d';
 import { Transform } from '../component/transform.component';
+import { Asteroid } from '../entity/asteroid.entity';
 import { Bullet } from '../entity/bullet.entity';
+import { Exploder } from '../entity/exploder.entity';
 import { Player } from '../entity/player.entity';
 import { Physics } from '../system/physics.system';
 import { Wrap } from '../system/wrap.system';
@@ -12,33 +14,39 @@ let counter = fireInterval;
 export const MAIN_STATE = new State({
     name: 'main',
     init: (game) => {
-        game.addSystem(Wrap);
-        game.addSystem(Physics);
+        game.addSystems(Wrap, Physics, Collision);
 
         game.world.addEntity(new Player());
+
+        // test asteroid
+        game.world.addEntity(new Asteroid(new Vec2(200,), new Vec2(100, 100)));
     },
     end: () => { },
     tick: (game) => {
-        const player = game.world.filterEntitiesByTag('player')[0]?.getComponent<Transform>('Transform');
+        const player = game.world.filterEntitiesByTag('player')[0];
+        const transform = player?.getComponent<Transform>('Transform');
+        const dead = (player as Exploder)?.dead;
 
         if (player) {
-            if (game.input.isKeyDown(Keys.A) || game.input.isKeyDown(Keys.ARROW_LEFT)) {
-                player.rotate(Angle.toRadians(-2));
-            }
-            else if (game.input.isKeyDown(Keys.D) || game.input.isKeyDown(Keys.ARROW_RIGHT)) {
-                player.rotate(Angle.toRadians(2));
+            if (!dead) {
+                if (game.input.isKeyDown(Keys.A) || game.input.isKeyDown(Keys.ARROW_LEFT)) {
+                    transform.rotate(Angle.toRadians(-2));
+                }
+                else if (game.input.isKeyDown(Keys.D) || game.input.isKeyDown(Keys.ARROW_RIGHT)) {
+                    transform.rotate(Angle.toRadians(2));
+                }
             }
 
-            if (game.input.isKeyDown(Keys.W) || game.input.isKeyDown(Keys.ARROW_UP)) {
-                player.accelerate(new Vec2(0, 5));
+            if (!dead && game.input.isKeyDown(Keys.W) || game.input.isKeyDown(Keys.ARROW_UP)) {
+                transform.accelerate(new Vec2(0, 5));
             }
             else {
-                player.decelerate(new Vec2(0, -4));
+                transform.decelerate(new Vec2(0, -4));
             }
 
             // quick fire testing
-            if (counter >= fireInterval && (game.input.isKeyDown(Keys.SPACE) || game.input.isKeyDown(Keys.ARROW_DOWN))) {
-                game.world.addEntity(new Bullet(player.position, player.angle));
+            if (counter >= fireInterval && !dead && (game.input.isKeyDown(Keys.SPACE) || game.input.isKeyDown(Keys.ARROW_DOWN))) {
+                game.world.addEntity(new Bullet(transform.position, transform.angle));
                 counter = 0;
             }
 

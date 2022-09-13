@@ -1,4 +1,4 @@
-import { BoxCollider, Color, FlatColor, Vec2 } from 'aura-2d';
+import { BoxCollider, Color, Entity, FlatColor, Game, Vec2 } from 'aura-2d';
 import { Transform } from '../component/transform.component';
 import { Wrappable } from '../component/wrappable.component';
 import { SHIP } from '../geometry/ship.geometry';
@@ -13,5 +13,11 @@ export class Player extends Exploder {
             new BoxCollider(),
             new Wrappable()
         ]);
+    }
+
+    public onCollisionStart(game: Game, other: Entity): void {
+        if (other.tag === 'asteroid') {
+            this.die(game);
+        }
     }
 }

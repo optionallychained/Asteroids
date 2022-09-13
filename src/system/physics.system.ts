@@ -14,10 +14,12 @@ export class Physics extends System {
         for (const mover of movers) {
             const moverTransform = mover.getComponent<Transform>('Transform');
 
-            moverTransform.velocity.set(
-                Math.max(Math.min(moverTransform.velocity.x + moverTransform.acceleration.x, moverTransform.maxSpeed), 0),
-                Math.max(Math.min(moverTransform.velocity.y + moverTransform.acceleration.y, moverTransform.maxSpeed), 0)
-            );
+            if (moverTransform.acceleration.x !== 0 || moverTransform.acceleration.y !== 0) {
+                moverTransform.velocity.set(
+                    Math.max(Math.min(moverTransform.velocity.x + moverTransform.acceleration.x, moverTransform.maxSpeed), 0),
+                    Math.max(Math.min(moverTransform.velocity.y + moverTransform.acceleration.y, moverTransform.maxSpeed), 0)
+                );
+            }
 
             moverTransform.move(Vec2.scale(moverTransform.velocity, frameDelta / 1000));
         }

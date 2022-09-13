@@ -7,7 +7,7 @@ export class Bullet extends Entity {
         super({
             tag: 'bullet',
             components: [
-                new Transform(position, new Vec2(10, 10), angle, new Vec2(0, 300), 300),
+                new Transform(position, new Vec2(10, 10), angle, new Vec2(0, 300)),
                 new Model(Geometries.Wireframe.TRIANGLE),
                 new Shader(ShaderPrograms.BASIC),
                 new FlatColor(Color.white()),
@@ -28,6 +28,12 @@ export class Bullet extends Entity {
             ||
             position.y + scale.y / 2 <= -game.world.dimensions.y / 2
         ) {
+            game.world.removeEntity(this);
+        }
+    }
+
+    public onCollisionStart(game: Game, other: Entity): void {
+        if (other.tag === 'asteroid') {
             game.world.removeEntity(this);
         }
     }
