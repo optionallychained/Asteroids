@@ -1,4 +1,4 @@
-import { Angle, Collision, Keys, State, Vec2 } from 'aura-2d';
+import { Angle, Collision, Keys, Random, State, Vec2 } from 'aura-2d';
 import { Transform } from '../component/transform.component';
 import { Asteroid } from '../entity/asteroid.entity';
 import { Bullet } from '../entity/bullet.entity';
@@ -19,7 +19,15 @@ export const MAIN_STATE = new State({
         game.world.addEntity(new Player());
 
         // test asteroid
-        game.world.addEntity(new Asteroid(new Vec2(200,), new Vec2(100, 100)));
+        for (let i = 0; i < 10; i++) {
+            game.world.addEntity(new Asteroid(
+                new Vec2(
+                    Random.between(-game.world.dimensions.x / 2, game.world.dimensions.x / 2),
+                    Random.between(-game.world.dimensions.y / 2, game.world.dimensions.y / 2)
+                ),
+                new Vec2(100, 100)
+            ));
+        }
     },
     end: () => { },
     tick: (game) => {

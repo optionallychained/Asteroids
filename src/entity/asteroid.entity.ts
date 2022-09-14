@@ -1,4 +1,4 @@
-import { BoxCollider, Color, Entity, FlatColor, Game, Random, Vec2 } from 'aura-2d';
+import { Angle, BoxCollider, Color, Entity, FlatColor, Game, Random, Vec2 } from 'aura-2d';
 import { Transform } from '../component/transform.component';
 import { Wrappable } from '../component/wrappable.component';
 import { ASTEROIDS } from '../geometry/asteroid.geometry';
@@ -8,7 +8,12 @@ export class Asteroid extends Exploder {
 
     constructor(position: Vec2, private baseScale: Vec2, private stage = 1) {
         super('asteroid', ASTEROIDS[Math.ceil(Random.between(0, 3)) - 1], [
-            new Transform(position, Vec2.scale(baseScale, 1 / stage), 0, new Vec2(Random.between(-150, 150), Random.between(-150, 150))),
+            new Transform(
+                position,
+                Vec2.scale(baseScale, 1 / stage),
+                Angle.toRadians(Random.between(0, 360)),
+                new Vec2(Random.between(-150, 150), Random.between(-150, 150))
+            ),
             new FlatColor(Color.white()),
             new BoxCollider(),
             new Wrappable()

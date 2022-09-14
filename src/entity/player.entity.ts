@@ -10,7 +10,7 @@ export class Player extends Exploder {
         super('player', SHIP, [
             new Transform(new Vec2(), new Vec2(25, 45), 0, new Vec2(), 200),
             new FlatColor(Color.white()),
-            new BoxCollider(),
+            // new BoxCollider(),
             new Wrappable()
         ]);
     }
