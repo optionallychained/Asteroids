@@ -16,10 +16,12 @@ export const VERTEX_EXPLOSION = new VertexShader({
         // multiplier for "explosion" movement per vertex
         attribute float a_MovementMultiplier;
 
-        void main() {
-            gl_PointSize = 1.0;
+        // alpha subtraction for vertex colors; increases with "explosion" movement
+        varying float v_Alpha;
 
-            // produce the "explosion" effect by moving the vertex when u_Movement is nonzero
+        void main() {
+            v_Alpha = 1.0 - (u_Movement * 7.0);
+
             vec3 position = vec3(a_Position + vec2(u_Movement * a_MovementMultiplier), 1.0);
 
             gl_Position = vec4(u_Projection * u_View * u_Transform2D * position, 1.0);
