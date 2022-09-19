@@ -1,5 +1,4 @@
 import { Angle, BoxCollider, Color, Entity, FlatColor, Game, Random, Transform, Vec2 } from 'aura-2d';
-import { Wrappable } from '../component/wrappable.component';
 import { ASTEROIDS } from '../geometry/asteroid.geometry';
 import { Exploder } from './exploder.entity';
 
@@ -14,8 +13,7 @@ export class Asteroid extends Exploder {
                 new Vec2(Random.between(-150, 150), Random.between(-150, 150))
             ),
             new FlatColor(Color.white()),
-            new BoxCollider(),
-            new Wrappable()
+            new BoxCollider()
         ]);
     }
 

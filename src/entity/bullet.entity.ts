@@ -3,11 +3,13 @@ import { Exploder } from './exploder.entity';
 
 export class Bullet extends Entity {
 
+    private ttl = 1000;
+
     constructor(position: Vec2, angle: number) {
         super({
             tag: 'bullet',
             components: [
-                new Transform(position, new Vec2(10, 10), angle, new Vec2(0, 300)),
+                new Transform(position, new Vec2(10, 10), angle, new Vec2(0, 600)),
                 new Model(Geometries.Wireframe.TRIANGLE),
                 new Shader(ShaderPrograms.BASIC),
                 new FlatColor(Color.white()),
@@ -16,18 +18,10 @@ export class Bullet extends Entity {
         });
     }
 
-    public tick(game: Game): void {
-        const { position, scale } = this.getComponent<Transform>('Transform');
+    public tick(game: Game, frameDelta: number): void {
+        this.ttl -= frameDelta;
 
-        if (
-            position.x - scale.x / 2 >= game.world.dimensions.x / 2
-            ||
-            position.x + scale.x / 2 <= -game.world.dimensions.x / 2
-            ||
-            position.y - scale.y / 2 >= game.world.dimensions.y / 2
-            ||
-            position.y + scale.y / 2 <= -game.world.dimensions.y / 2
-        ) {
+        if (this.ttl <= 0) {
             game.world.removeEntity(this);
         }
     }

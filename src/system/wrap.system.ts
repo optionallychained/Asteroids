@@ -7,15 +7,12 @@ export class Wrap extends System {
     }
 
     public tick(game: Game): void {
-        const wrappables = game.world.filterEntitiesByComponentNames('Wrappable', 'Transform');
-
-        for (const wrappable of wrappables) {
-            const transform = wrappable.getComponent<Transform>('Transform');
-
-            const left = this.left(transform),
-                right = this.right(transform),
-                bottom = this.bottom(transform),
-                top = this.top(transform);
+        for (const wrapper of game.world.filterEntitiesByComponentName('Transform')) {
+            const transform = wrapper.getComponent<Transform>('Transform'),
+                left = transform.position.x - transform.scale.x * 0.5,
+                right = transform.position.y + transform.scale.y * 0.5,
+                bottom = transform.position.y - transform.scale.y * 0.5,
+                top = transform.position.y + transform.scale.y * 0.5;
 
             if (left >= game.world.dimensions.x / 2) {
                 transform.translate(new Vec2(-game.world.dimensions.x - transform.scale.x, 0));
@@ -31,21 +28,5 @@ export class Wrap extends System {
                 transform.translate(new Vec2(0, game.world.dimensions.y + transform.scale.y));
             }
         }
-    }
-
-    private left(transform: Transform): number {
-        return transform.position.x - (transform.scale.x / 2);
-    }
-
-    private right(transform: Transform): number {
-        return transform.position.x + (transform.scale.x / 2);
-    }
-
-    private bottom(transform: Transform): number {
-        return transform.position.y - (transform.scale.y / 2);
-    }
-
-    private top(transform: Transform): number {
-        return transform.position.y + (transform.scale.y / 2);
     }
 }
