@@ -1,5 +1,4 @@
-import { BoxCollider, Color, Entity, FlatColor, Game, Geometries, Model, Shader, ShaderPrograms, Vec2 } from 'aura-2d';
-import { Transform } from '../component/transform.component';
+import { BoxCollider, Color, Entity, FlatColor, Game, Geometries, Model, Shader, ShaderPrograms, Transform, Vec2 } from 'aura-2d';
 import { Exploder } from './exploder.entity';
 
 export class Bullet extends Entity {

@@ -1,5 +1,5 @@
-import { Angle, Collision, Keys, Random, State, Vec2 } from 'aura-2d';
-import { Transform } from '../component/transform.component';
+import { Angle, Collision, Keys, Random, State, Transform, Vec2 } from 'aura-2d';
+import { Thrust } from '../component/thrust.component';
 import { Asteroid } from '../entity/asteroid.entity';
 import { Bullet } from '../entity/bullet.entity';
 import { Exploder } from '../entity/exploder.entity';
@@ -19,7 +19,7 @@ export const MAIN_STATE = new State({
         game.world.addEntity(new Player());
 
         // test asteroid
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 1; i++) {
             game.world.addEntity(new Asteroid(
                 new Vec2(
                     Random.between(-game.world.dimensions.x / 2, game.world.dimensions.x / 2),
@@ -31,25 +31,27 @@ export const MAIN_STATE = new State({
     },
     end: () => { },
     tick: (game) => {
-        const player = game.world.filterEntitiesByTag('player')[0];
-        const transform = player?.getComponent<Transform>('Transform');
-        const dead = (player as Exploder)?.dead;
+        const player = game.world.filterEntitiesByTag('player')[0] as Exploder | undefined;
 
         if (player) {
+            const transform = player.getComponent<Transform>('Transform');
+            const thrust = player.getComponent<Thrust>('Thrust');
+            const dead = player.dead;
+
             if (!dead) {
                 if (game.input.isKeyDown(Keys.A) || game.input.isKeyDown(Keys.ARROW_LEFT)) {
-                    transform.rotate(Angle.toRadians(-2));
+                    transform.rotate(Angle.toRadians(-5));
                 }
                 else if (game.input.isKeyDown(Keys.D) || game.input.isKeyDown(Keys.ARROW_RIGHT)) {
-                    transform.rotate(Angle.toRadians(2));
+                    transform.rotate(Angle.toRadians(5));
                 }
-            }
 
-            if (!dead && game.input.isKeyDown(Keys.W) || game.input.isKeyDown(Keys.ARROW_UP)) {
-                transform.accelerate(new Vec2(0, 5));
-            }
-            else {
-                transform.decelerate(new Vec2(0, -4));
+                if (game.input.isKeyDown(Keys.W) || game.input.isKeyDown(Keys.ARROW_UP)) {
+                    thrust.on();
+                }
+                else {
+                    thrust.off();
+                }
             }
 
             // quick fire testing

@@ -1,7 +1,7 @@
-import { Game, System, Vec2 } from 'aura-2d';
-import { Transform } from '../component/transform.component';
+import { Game, System, Transform, Vec2 } from 'aura-2d';
+import { MaxSpeed } from '../component/maxSpeed.component';
+import { Thrust } from '../component/thrust.component';
 
-// custom physics system working with custom Transform for accelerative movement
 export class Physics extends System {
 
     constructor() {
@@ -9,19 +9,36 @@ export class Physics extends System {
     }
 
     public tick(game: Game, frameDelta: number): void {
-        const movers = game.world.filterEntitiesByComponentName('Transform');
+        for (const mover of game.world.filterEntitiesByComponentName('Transform')) {
+            const transform = mover.getComponent<Transform>('Transform');
 
-        for (const mover of movers) {
-            const moverTransform = mover.getComponent<Transform>('Transform');
+            if (mover.hasComponents('Thrust', 'MaxSpeed')) {
+                const thrust = mover.getComponent<Thrust>('Thrust').value;
+                const maxSpeed = mover.getComponent<MaxSpeed>('MaxSpeed').value;
 
-            if (moverTransform.acceleration.x !== 0 || moverTransform.acceleration.y !== 0) {
-                moverTransform.velocity.set(
-                    Math.max(Math.min(moverTransform.velocity.x + moverTransform.acceleration.x, moverTransform.maxSpeed), 0),
-                    Math.max(Math.min(moverTransform.velocity.y + moverTransform.acceleration.y, moverTransform.maxSpeed), 0)
-                );
+                if (thrust) {
+                    const acceleration = Vec2.scale(transform.up, thrust);
+
+                    transform.velocity.set(
+                        Math.max(Math.min(transform.velocity.x + acceleration.x, maxSpeed), -maxSpeed),
+                        Math.max(Math.min(transform.velocity.y + acceleration.y, maxSpeed), -maxSpeed)
+                    );
+                }
+                else {
+                    const x = Math.abs(transform.velocity.x);
+                    const y = Math.abs(transform.velocity.y);
+
+                    transform.velocity.set(
+                        Math.max(x - x * 0.015, 0) * (transform.velocity.x < 0 ? -1 : 1),
+                        Math.max(y - y * 0.015, 0) * (transform.velocity.y < 0 ? -1 : 1)
+                    );
+                }
+
+                transform.translate(Vec2.scale(transform.velocity, frameDelta / 1000));
             }
-
-            moverTransform.move(Vec2.scale(moverTransform.velocity, frameDelta / 1000));
+            else {
+                transform.move(Vec2.scale(transform.velocity, frameDelta / 1000));
+            }
         }
     }
 }
