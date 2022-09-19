@@ -10,7 +10,7 @@ export class Wrap extends System {
         for (const wrapper of game.world.filterEntitiesByComponentName('Transform')) {
             const transform = wrapper.getComponent<Transform>('Transform'),
                 left = transform.position.x - transform.scale.x * 0.5,
-                right = transform.position.y + transform.scale.y * 0.5,
+                right = transform.position.x + transform.scale.x * 0.5,
                 bottom = transform.position.y - transform.scale.y * 0.5,
                 top = transform.position.y + transform.scale.y * 0.5;
 
