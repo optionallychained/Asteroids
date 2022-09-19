@@ -23,7 +23,7 @@ export abstract class Exploder extends Entity {
     public die(game: Game): void {
         const explosionData = this.getComponent<ExplosionData>('ExplosionData');
 
-        this.i = setInterval(() => explosionData.vertexMovement += 0.0075, 50);
+        this.i = setInterval(() => explosionData.vertexMovement += 0.015, 50);
         this.dead = true;
 
         setTimeout(() => {
@@ -31,6 +31,6 @@ export abstract class Exploder extends Entity {
             this.i = undefined;
 
             game.world.removeEntity(this);
-        }, 3000);
+        }, 750);
     }
 }
